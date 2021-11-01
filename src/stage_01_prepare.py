@@ -4,6 +4,7 @@ import shutil
 from tqdm import tqdm
 import logging
 from src.utils.common import read_yaml,create_dirs
+from src.utils.data_mgmt import process_posts
 import random
 
 STAGE = "One"
@@ -30,6 +31,17 @@ def main(config_path, params_path):
     artifacts = config["artifacts"]
     prepared_data_dir_path = os.path.join(artifacts["ARTIFACTS_DIR"],artifacts["PREPARED_DATA"])
     create_dirs([prepared_data_dir_path])
+
+    train_data_path = os.path.join(prepared_data_dir_path, artifacts["TRAIN_DATA"])
+    test_data_path = os.path.join(prepared_data_dir_path, artifacts["TEST_DATA"])
+
+    encoding = "utf8"
+    with open(input_data, encoding=encoding) as fd_in:
+        with open(train_data_path, "w", encoding=encoding) as fd_out_train:
+            with open(test_data_path, "w", encoding=encoding) as fd_out_test:
+                process_posts(fd_in, fd_out_train, fd_out_test, "<python>", split)
+
+
 
 
 if __name__ == '__main__':
